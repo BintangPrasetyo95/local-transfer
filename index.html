@@ -1,13 +1,200 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/icon.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>BintangPrasetyo's Local-Transfer</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>BintangPrasetyo's WebSend</title>
+  <meta name="description" content="Securely beam files between devices over Wi-Fi" />
+  <link rel="icon" type="image/svg+xml" href="icon.svg" />
+  <link rel="stylesheet" href="style.css" />
+  
+  <!-- Development script for icons (Lucide) -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body>
+
+  <!-- Background orbs -->
+  <div class="bg-orb orb1"></div>
+  <div class="bg-orb orb2"></div>
+  <div class="bg-orb orb3"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="header">
+      <div class="logo">
+        <div class="logo-icon">
+          <img src="icon.svg" style="width: 100%; height: 100%;" alt="Logo" />
+        </div>
+        <span class="logo-text">
+          <span class="logo-owner">BintangPrasetyo's</span> <span class="logo-accent">WebSend</span>
+        </span>
+      </div>
+      <div class="header-badge">Instant Transfer</div>
+    </header>
+
+    <!-- Hero -->
+    <section class="hero">
+      <h1 class="hero-title">Securely Beam <span class="gradient-text">Local Files</span></h1>
+      <p class="hero-subtitle">Connect instantly and transfer files over Wi-Fi directly peer-to-peer—all done in your browser.</p>
+    </section>
+
+    <!-- Main Card -->
+    <main class="main-card glass">
+      
+      <div class="layout-grid">
+        
+        <!-- Left Column: Connection Info -->
+        <div>
+          <!-- Initializing state -->
+          <div id="state-initializing" style="text-align: center; padding: 40px 0;">
+            <i data-lucide="loader-2" class="animate-spin" style="width: 32px; height: 32px; color: var(--accent); margin: 0 auto 10px; display: block;"></i>
+            <p style="color: var(--text-muted)">Generating secure ID...</p>
+          </div>
+
+          <!-- Ready/Connected state -->
+          <div id="state-ready" style="text-align: center; display: none;">
+            <p class="setting-label" style="justify-content: center; margin-bottom: 8px;">Your Receiving ID</p>
+            <div class="id-badge" id="peer-id-display">
+              ------
+            </div>
+            
+            <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 0.8rem; color: var(--text-muted);" id="connection-status">
+              <div style="width: 8px; height: 8px; border-radius: 50%; background: var(--red);" id="connection-dot"></div>
+              <span id="connection-text">Waiting for connection...</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right Column: Actions -->
+        <div>
+          <!-- Not connected actions -->
+          <div id="action-connect">
+            <form id="connect-form">
+              <div class="setting-group">
+                <label class="setting-label" for="link-input">
+                  <i data-lucide="link" style="width: 14px; height: 14px;"></i>
+                  Connect to Device
+                </label>
+                <div class="size-input-group">
+                  <input 
+                    type="text" 
+                    id="link-input" 
+                    class="size-input" 
+                    placeholder="e.g. A1B2C3" 
+                    maxlength="6"
+                    required
+                    autocomplete="off"
+                  />
+                </div>
+              </div>
+              <button type="submit" id="btn-connect" class="btn-compress" disabled>
+                <i data-lucide="wifi" style="width: 18px; height: 18px;" id="btn-connect-icon"></i>
+                <span id="btn-connect-text">Connect</span>
+              </button>
+            </form>
+          </div>
+
+          <!-- Connected actions -->
+          <div id="action-transfer" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+              <h2 style="font-size: 1.2rem; font-weight: 800;">Send Files</h2>
+              <button id="btn-disconnect" class="btn-secondary" style="padding: 8px 12px; font-size: 0.75rem;">
+                Disconnect
+              </button>
+            </div>
+            
+            <div class="dropzone" id="dropzone">
+              <input type="file" id="file-input" style="display: none;" />
+              
+              <div id="dropzone-empty" style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
+                <div class="file-icon-wrap" style="background: rgba(255,200,0,0.1); color: var(--accent);">
+                  <i data-lucide="upload" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div>
+                  <p class="drop-title">Click to select</p>
+                  <p class="drop-sub">Any file up to 50MB</p>
+                </div>
+              </div>
+
+              <div id="dropzone-selected" style="display: none; flex-direction: column; align-items: center; gap: 12px;">
+                <div class="file-icon-wrap">
+                  <i data-lucide="file" style="width: 24px; height: 24px;"></i>
+                </div>
+                <div>
+                  <p class="drop-title" id="selected-file-name">filename.txt</p>
+                  <p class="drop-sub" id="selected-file-size">1.2 MB</p>
+                </div>
+              </div>
+            </div>
+
+            <button id="btn-send" class="btn-compress" style="margin-top: 16px; display: none;">
+              <i data-lucide="send" style="width: 18px; height: 18px;"></i>
+              Send File
+            </button>
+            
+            <div id="progress-panel" class="progress-panel" style="margin-top: 16px; padding-top: 16px; display: none;">
+              <div class="progress-header">
+                <div class="progress-status">
+                  <div class="spinner" id="progress-spinner"></div>
+                  <span id="progress-label">Sending...</span>
+                </div>
+                <span style="font-size: 0.85rem; font-weight: 700; color: var(--accent2);" id="progress-percent">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Received Files -->
+      <div id="received-files-section" style="margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border); display: none;">
+        <h3 style="font-size: 1.2rem; font-weight: 800; margin-bottom: 16px;">Received Files</h3>
+        <div id="received-files-list" style="display: flex; flex-direction: column; gap: 12px;">
+          <!-- Dynamically populated -->
+        </div>
+      </div>
+    </main>
+
+    <!-- How it works -->
+    <section class="how-it-works">
+      <h2 class="section-title">How It Works</h2>
+      <div class="steps-grid">
+        <div class="step-card glass">
+          <div class="step-num">01</div>
+          <div class="step-icon">
+            <i data-lucide="link-2" style="width: 32px; height: 32px;"></i>
+          </div>
+          <h3>Pair Devices</h3>
+          <p>Enter the 6-character ID shown on the receiving device.</p>
+        </div>
+        <div class="step-card glass">
+          <div class="step-num">02</div>
+          <div class="step-icon">
+            <i data-lucide="sliders-horizontal" style="width: 32px; height: 32px;"></i>
+          </div>
+          <h3>Select File</h3>
+          <p>Choose any file you want to send from your local drive.</p>
+        </div>
+        <div class="step-card glass">
+          <div class="step-num">03</div>
+          <div class="step-icon">
+            <i data-lucide="download" style="width: 32px; height: 32px;"></i>
+          </div>
+          <h3>Receive</h3>
+          <p>Get your file instantly without using cloud servers.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      <p>BintangPrasetyo's WebSend &middot; All processing done <strong>100% in your browser</strong>.</p>
+    </footer>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://unpkg.com/peerjs@1.5.2/dist/peerjs.min.js"></script>
+  <script src="app.js"></script>
+</body>
 </html>
