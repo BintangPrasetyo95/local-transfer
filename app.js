@@ -37,7 +37,7 @@ const elReceivedList = document.getElementById('received-files-list');
 // State
 let peer = null;
 let currentConnection = null;
-let selectedFile = null;
+let selectedFiles = [];
 
 // Generate 6-char short ID
 function generateShortId() {
@@ -162,20 +162,26 @@ elDropzone.addEventListener('click', () => {
 
 elFileInput.addEventListener('change', (e) => {
   if (e.target.files.length > 0) {
-    selectedFile = e.target.files[0];
+    selectedFiles = Array.from(e.target.files);
     elDropEmpty.style.display = 'none';
     elDropSelected.style.display = 'flex';
     elDropzone.classList.add('drag-over');
     
-    elSelectedFileName.innerText = selectedFile.name;
-    elSelectedFileSize.innerText = formatSize(selectedFile.size);
+    if (selectedFiles.length === 1) {
+      elSelectedFileName.innerText = selectedFiles[0].name;
+      elSelectedFileSize.innerText = formatSize(selectedFiles[0].size);
+    } else {
+      elSelectedFileName.innerText = `${selectedFiles.length} files selected`;
+      const totalSize = selectedFiles.reduce((acc, file) => acc + file.size, 0);
+      elSelectedFileSize.innerText = formatSize(totalSize);
+    }
     
     elBtnSend.style.display = 'flex';
   }
 });
 
 function resetFileSelection() {
-  selectedFile = null;
+  selectedFiles = [];
   elFileInput.value = '';
   elDropEmpty.style.display = 'flex';
   elDropSelected.style.display = 'none';
@@ -184,9 +190,9 @@ function resetFileSelection() {
   elProgPanel.style.display = 'none';
 }
 
-// Send file
+// Send files
 elBtnSend.addEventListener('click', () => {
-  if (!currentConnection || !selectedFile) return;
+  if (!currentConnection || selectedFiles.length === 0) return;
 
   elBtnSend.style.display = 'none';
   elProgPanel.style.display = 'block';
@@ -194,11 +200,13 @@ elBtnSend.addEventListener('click', () => {
 
   // Simulate network delay for UI before sending
   setTimeout(() => {
-    currentConnection.send({
-      type: 'file',
-      file: selectedFile,
-      name: selectedFile.name,
-      size: selectedFile.size
+    selectedFiles.forEach(file => {
+      currentConnection.send({
+        type: 'file',
+        file: file,
+        name: file.name,
+        size: file.size
+      });
     });
     updateProgress(100);
 
