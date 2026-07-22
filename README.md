@@ -1,16 +1,43 @@
-# React + Vite
+<div align="center">
+  <img src="icon.svg" width="120" alt="WebSend Icon" />
+  <h1>BintangPrasetyo's WebSend</h1>
+  <p><strong>Securely beam files directly between devices over Wi-Fi, 100% in your browser.</strong></p>
+</div>
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+<br />
 
-Currently, two official plugins are available:
+WebSend is a blazing fast, cross-platform local file transfer application inspired by LocalSend. It establishes a direct **peer-to-peer WebRTC connection** to send files quickly and securely without uploading them to any third-party cloud servers.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## ✨ Features
 
-## React Compiler
+- **Direct P2P Transfer**: Your files go directly from device A to device B over your local network/Wi-Fi using PeerJS.
+- **No Installation Required**: Works natively in your browser. No apps, no Node.js, no build tools needed.
+- **Lightning Fast Pair**: Simple 6-character short IDs for instant device pairing.
+- **Beautiful UI**: Uses the signature *Bee Theme* design system—glassmorphism, vibrant amber gradients, and fluid micro-animations.
+- **100% Client Side**: Absolute privacy.
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+## 🚀 How to Use
 
-## Expanding the Oxlint configuration
+Since WebSend is a **Native Vanilla JS** application, you don't need any complicated setups or development servers.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and Oxlint's TypeScript related rules in your project.
+1. **Host or Open**: You can simply double click `index.html` to open it in your browser, or push the repository to GitHub Pages.
+2. **Pair Devices**: Open the app on two devices. Look at the *Receiving ID* on one device, and type it into the *Connect to Device* box on the other.
+3. **Beam Files**: Once connected, click the dropzone to select any file and hit **Send**.
+
+## 🛠️ Built With
+
+*   **HTML5 & Vanilla JS**
+*   **CSS3** (BintangPrasetyo95's Bee Theme)
+*   **[PeerJS](https://peerjs.com/)** (WebRTC wrapper for P2P connections)
+*   **[Lucide Icons](https://lucide.dev/)**
+
+## 🎨 Theme
+
+This project uses the consistent **BintangPrasetyo95 Bee Theme** to seamlessly match other utilities (like QR Generator, PDF/DOCX Compresser, and Auto Subtitles) in the suite.
+
+<br />
+
+---
+<div align="center">
+  <sub>Built with ❤️ by BintangPrasetyo95</sub>
+</div>
